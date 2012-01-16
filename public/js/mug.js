@@ -18,6 +18,10 @@ function Mug() {
 				if(!isNaN(this.rgb[0])) {
 					self.model.uniforms.matColor = this.rgb;
 					$('#imgContainer').css('background-color', this.color);
+					if(this.rgb[0] + this.rgb[1] + this.rgb[2] < 1.5)
+						$('#imgLabel').css('color', 'white');
+					else
+						$('#imgLabel').css('color', 'black');
 					App.scene.draw();
 				}
 			});
