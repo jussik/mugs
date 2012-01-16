@@ -1,0 +1,19 @@
+#imgContainer {
+	box-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+	position:relative;
+	width:200px;
+	height:200px;
+}
+#imgLabel {
+	z-index:99;
+	text-align: center;
+	padding-top: 25px;
+}
+#imgUpload {
+	position:absolute;
+	z-index:101;
+	width:100%;
+	height:100%;
+	opacity:0;
+	cursor: pointer;
+}
