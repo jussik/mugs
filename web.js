@@ -2,11 +2,12 @@ var express = require('express'),
 	app = express.createServer();
 
 app.use(express.static(__dirname + '/public'));
-app.set("view engine", "jade");
 app.register(".jade", require("jade").express);
+app.set("view engine", "jade");
+app.set('view options', { layout: false });
 
 app.get('/', function(req, res) {
-	res.render('index', { layout: false });
+	res.render('index.jade');
 });
 
 var port = process.env.PORT || 3000;
