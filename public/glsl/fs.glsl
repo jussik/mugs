@@ -2,11 +2,12 @@
 precision highp float;
 #endif
 
-#define LIGHT_MAX 2
+#define LIGHT_MAX 3
 
-varying vec4 vColor;
 varying vec4 vTransformedNormal;
 varying vec4 vPosition;
+varying vec4 vModelPosition;
+varying vec4 vColor;
 
 uniform float shininess;
 uniform float imageScale;
@@ -37,10 +38,8 @@ void main(void) {
 
 	vec3 transformedPointLocation;
 	vec3 normal = vTransformedNormal.xyz;
-	vec4 transformedPosition = worldMatrix * vPosition;
 
-	//vec3 eyeDirection = normalize(-vPosition.xyz);
-	vec3 eyeDirection = normalize(-transformedPosition.xyz);
+	vec3 eyeDirection = normalize(-vPosition.xyz);
 	vec3 reflectionDirection;
 
 	vec3 pointWeight = vec3(0.0, 0.0, 0.0);
@@ -48,8 +47,7 @@ void main(void) {
 	for (int i = 0; i < LIGHT_MAX; i++) {
 		if (i < numberPoints) {
 			transformedPointLocation = (viewMatrix * vec4(pointLocation[i], 1.0)).xyz;
-			//lightDirection = normalize(transformedPointLocation - vPosition.xyz);
-			lightDirection = normalize(transformedPointLocation - transformedPosition.xyz);
+			lightDirection = normalize(transformedPointLocation - vPosition.xyz);
 
 			if (enableSpecular[i] > 0.0) {
 				reflectionDirection = reflect(-lightDirection, normal);
@@ -66,13 +64,13 @@ void main(void) {
 
 	lightWeighting = ambientColor + diffuseLight;
 
-	vec3 texPos = vPosition.xyz;//(worldMatrix * vPosition).xyz;
+	vec3 texPos = vModelPosition.xyz;
 	vec4 texColor = vec4(0.0, 0.0, 0.0, 0.0);
 	vec2 texCoord = vec2(texPos.x/imageScale + 0.5, -texPos.y/imageScale + 0.5);
-	//vec2 texCoord = vec2(vPosition.x/imageScale + 0.5, -vPosition.y/imageScale + 0.5);
 	if (hasTexture) {
 		if(texCoord.x <= 1.0 && texCoord.x >= 0.0 &&
-			texCoord.y <= 1.0 && texCoord.y >= 0.0) {
+			texCoord.y <= 1.0 && texCoord.y >= 0.0 &&
+			dot(vTransformedNormal, vPosition) > 0.5) {
 			if(texPos.z < 0.0) {
 				texCoord.x = 1.0 - texCoord.x;
 			}

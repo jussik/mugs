@@ -36,6 +36,10 @@ var Scene = function() {
 			color: { r:0.67, g:0.63, b:0.6 },
 			specular: { r:1.0, g:1.0, b:1.0 }
 		},{
+			position: { x:-2, y:6, z:-8 },
+			color: { r:0.4, g:0.4, b:0.4 },
+			specular: { r:0.6, g:0.6, b:0.6 }
+		},{
 			position: {  x:6, y:-6, z:0 },
 			color: { r:0.29, g:0.35, b:0.4 }
 		}];
