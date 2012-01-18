@@ -5,7 +5,7 @@ var App = {
 		App.uploads = new UploadHandler();
 		
 		$.when(App.scene.ready, App.currentMug.ready).done(function() {
-			this.view = new View();
+			App.view = new View();
 			App.scene.setMug(App.currentMug);
 		}).fail(App.error);
 	},

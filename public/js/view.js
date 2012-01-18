@@ -1,11 +1,12 @@
 function View() {
+	var self = this;
 	var c = $('#canvas');
 	var moving = false;
 	var start = {x:0, y:0, rot:0, pitch:0};
 	var current = {x:0, y:0, rot:0, pitch:0};
 	var zoom = 0;
 	
-	function update() {
+	var update = function() {
 		App.scene.camera.view.id();
 		App.scene.camera.view.$translate(0,0,-5 + zoom);
 		App.scene.camera.view.$rotateAxis(current.pitch,[1,0,0]);
@@ -17,11 +18,13 @@ function View() {
 		current.x = start.x = e.clientX;
 		current.x = start.y = e.clientY;
 		moving = true;
+		return false;
 	});
 	$('#canvas').bind('mousewheel', function(e, delta) {
 		zoom += delta/5;
 		zoom = Math.max(Math.min(zoom,2),-2);
 		update();
+		return false;
 	});
 	$(document).mousemove(function(e) {
 		if(moving) {
@@ -31,6 +34,7 @@ function View() {
 			current.pitch = start.pitch + (current.y/100 - start.y/100);
 			current.pitch = Math.max(Math.min(current.pitch,1),-1);
 			update();
+			return false;
 		}
 	});
 	$(document).mouseup(function(e) {

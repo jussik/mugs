@@ -1,7 +1,7 @@
 function Mug() {
 	var self = this;
-	this._def = $.Deferred();
-	this.ready = this._def.promise();
+	var _def = $.Deferred();
+	this.ready = _def.promise();
 	
 	$.get('obj/mug.obj', function(objData) {
 		self.mesh = obj2js(objData);
@@ -16,17 +16,20 @@ function Mug() {
 			.setColor('#ffffff')
 			.linkTo(function() {
 				if(!isNaN(this.rgb[0])) {
+					// set model material
 					self.model.uniforms.matColor = this.rgb;
+					// set image container background
 					$('#imgContainer').css('background-color', this.color);
 					if(this.rgb[0] + this.rgb[1] + this.rgb[2] < 1.5)
 						$('#imgLabel').css('color', 'white');
 					else
 						$('#imgLabel').css('color', 'black');
+					// render the mug with the new colour
 					App.scene.draw();
 				}
 			});
 		
-		self._def.resolve();
+		_def.resolve();
 	});
 	
 	this.texFromUserImage = function() {

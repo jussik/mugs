@@ -1,7 +1,7 @@
 var Scene = function() {
 	var self = this;
-	this._def = $.Deferred();
-	this.ready = this._def.promise();
+	var _def = $.Deferred();
+	this.ready = _def.promise();
 	
 	this.init = function() {
 		PhiloGL('canvas', {
@@ -25,8 +25,10 @@ var Scene = function() {
 		this.camera = app.camera;
 		this.scene = app.scene;
 
+		gl.clearColor(0.0,0.0,0.0,0.0);
 		gl.enable(gl.DEPTH_TEST);
 		gl.depthFunc(gl.LEQUAL);
+		gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
 
 		var lights = this.scene.config.lights;
 		lights.enable = true;
@@ -49,7 +51,7 @@ var Scene = function() {
 
 		this.scene.render();
 		
-		this._def.resolve();
+		_def.resolve();
 	}
 	
 	this.setMug = function(newMug) {
@@ -61,6 +63,7 @@ var Scene = function() {
 	}
 	
 	this.draw = function() {
+		this.gl.clear(this.gl.COLOR_BUFFER_BIT|this.gl.DEPTH_BUFFER_BIT);
 		this.scene.render();
 	}
 	
