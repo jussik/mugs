@@ -61,7 +61,7 @@ function isSameFile(path1, path2) {
 	return buf1.equals(buf2);
 }
 
-exports.onUpload = function(req, res) {
+exports.post = function(req, res) {
 	req.form.complete(function(err, fields, files) {
 		if(err) {
 			res.send(err);

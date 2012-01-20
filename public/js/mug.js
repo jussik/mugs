@@ -3,6 +3,32 @@ function Mug() {
 	var _def = $.Deferred();
 	this.ready = _def.promise();
 	
+	this.showTexture = false;
+	this.imageScale = 1.0;
+	this.skipDraw = false;
+	
+	$('#imgTarget').load(function() {
+		$('#imgLabel').hide();
+		self.showTexture = true;
+		self.texFromUserImage();
+	});
+	$('#imgClear').click(function() {
+		$('#imgTarget').hide();
+		$('#imgLabel').show();
+		self.showTexture = false;
+		self.texFromUserImage();
+		return false;
+	});
+	$('#imgScale').bind('keyup change paste', function() {
+		var fval = parseFloat($(this).val());
+		if(!isNaN(fval)) {
+			self.imageScale = fval;
+			App.scene.program.setUniform("imageScale", self.imageScale);
+			if(!self.skipDraw)
+				App.scene.draw();
+		}
+	})
+	
 	$.get('obj/mug.obj', function(objData) {
 		self.mesh = obj2js(objData);
 		
@@ -12,7 +38,7 @@ function Mug() {
 		}
 		self.model = new PhiloGL.O3D.Model(self.mesh);
 		
-		self.picker = $.farbtastic('#mug')
+		self.picker = $.farbtastic('#picker')
 			.setColor('#ffffff')
 			.linkTo(function() {
 				if(!isNaN(this.rgb[0])) {
@@ -25,7 +51,8 @@ function Mug() {
 					else
 						$('#imgLabel').css('color', 'black');
 					// render the mug with the new colour
-					App.scene.draw();
+					if(!self.skipDraw)
+						App.scene.draw();
 				}
 			});
 		
@@ -34,26 +61,40 @@ function Mug() {
 	
 	this.texFromUserImage = function() {
 		var gl = App.scene.gl;
-		if(self.texture)
-			gl.deleteTexture(self.texture);
-	
-		self.texture = gl.createTexture();
-		gl.activeTexture(gl.TEXTURE0);
-		gl.bindTexture(gl.TEXTURE_2D, self.texture);
-		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, $('#imgTarget').get(0));
 		
-		// Either disallow mipmapping, set filters to linear (or nearest)
-		// and clamp to edges or work around power-of-two limitation
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-		//gl.generateMipmap(gl.TEXTURE_2D);
+		if(self.showTexture) {
+			if(self.texture)
+				gl.deleteTexture(self.texture);
+			
+			self.texture = gl.createTexture();
+			gl.activeTexture(gl.TEXTURE0);
+			gl.bindTexture(gl.TEXTURE_2D, self.texture);
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, $('#imgTarget').get(0));
+			
+			// Either disallow mipmapping, set filters to linear (or nearest)
+			// and clamp to edges or work around power-of-two limitation
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+			//gl.generateMipmap(gl.TEXTURE_2D);
+			
+			App.scene.program.setUniform("hasTexture", true);
+			App.scene.program.setUniform("imageScale", self.imageScale);
+			App.scene.program.setUniform("sampler", 0);
+		} else {
+			App.scene.program.setUniform("hasTexture", false);
+		}
 		
-		App.scene.program.setUniform("hasTexture", true);
-		App.scene.program.setUniform("sampler", 0);
-		App.scene.program.setUniform("imageScale", 1.25);
-		
-		App.scene.draw();
+		if(!self.skipDraw)
+			App.scene.draw();
 	};
+	
+	this.load = function(data) {
+		self.skipDraw = true;
+		self.picker.setColor(data.color);
+		$('#imgScale').val(data.imgScale).change();
+		self.skipDraw = false;
+		$('#imgTarget').hide().prop('src', data.img);
+	}
 };

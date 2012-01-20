@@ -21,13 +21,7 @@ function UploadHandler() {
 		
 		var reader = new FileReader();
 		reader.onload = function(re) {
-			$('#imgTarget')
-				.prop('src', re.target.result)
-				.unbind('load.applyTex')
-				.bind('load.applyTex', function() {
-					App.currentMug.texFromUserImage();
-				});
-			$('#imgLabel').hide();
+			$('#imgTarget').prop('src', re.target.result);
 		};
 		reader.readAsDataURL(file);
 		
@@ -43,16 +37,6 @@ function UploadHandler() {
 		$('#imgUpload').trigger('click');
 	});
 	$('#imgTarget').load(function() {
-		var img = $(this);
-		var pw = img.parent().width();
-		var ph = img.parent().height();
-		var iw = Math.min(img.width(),pw-10);
-		var ih = Math.min(img.height(),ph-10);
-		img.css({
-			width:iw,
-			height:ih,
-			marginLeft:(pw-iw)/2,
-			marginTop:(ph-ih)/2
-		});
+		Util.fitImage($(this), 10);
 	});
 }

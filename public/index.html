@@ -8,21 +8,30 @@
 		<script type="text/javascript" src="js/lib/PhiloGL.js"></script>
 		<script type="text/javascript" src="js/lib/jquery.mousewheel.js"></script>
 		<script type="text/javascript" src="js/lib/farbtastic.js"></script>
+		<script type="text/javascript" src="js/util.js"></script>
 		<script type="text/javascript" src="js/obj2js.js"></script>
 		<script type="text/javascript" src="js/mug.js"></script>
 		<script type="text/javascript" src="js/scene.js"></script>
-		<script type="text/javascript" src="js/uploads.js"></script>
+		<script type="text/javascript" src="js/upload.js"></script>
+		<script type="text/javascript" src="js/popular.js"></script>
 		<script type="text/javascript" src="js/view.js"></script>
-		<script type="text/javascript" src="js/main.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
 	</head>
 	<body>
 		<canvas id="canvas" width="640" height="480" style="float:left"></canvas>
 		<div id="editor" style="float:left">
-			<div id="mug"></div>
+			<div id="picker"></div>
 			<div id="imgContainer">
 				<input id="imgUpload" type="file">
 				<img id="imgTarget" alt="">
 				<div id="imgLabel">Click here or drop image file to set image</div>
+			</div>
+			<input type="text" id="imgScale" value="1" style="width:100px">
+			<a href="#" id="imgClear">Clear image</a>
+		</div>
+		<div id="popular" style="float:left">
+			<div id="popularTemplate" class="popularContainer">
+				<img alt="" class="popularImage">
 			</div>
 		</div>
 	</body>

@@ -7,6 +7,7 @@ var App = {
 		$.when(App.scene.ready, App.currentMug.ready).done(function() {
 			App.view = new View();
 			App.scene.setMug(App.currentMug);
+			GetPopularMugs();
 		}).fail(App.error);
 	},
 	error: function(msg) {

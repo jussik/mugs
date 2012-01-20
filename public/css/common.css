@@ -6,7 +6,8 @@
 }
 #imgLabel {
 	text-align: center;
-	padding-top: 25px;
+	padding-top: 40px;
+	margin: 0px 10px;
 }
 #imgUpload {
 	position: absolute;
@@ -14,4 +15,23 @@
 	height: 1px;
 	top: -200px;
 	left: -200px;
+}
+#imgTarget {
+	display: none;
+}
+
+.popularContainer {
+	border: 1px solid rgba(0,0,0,0.75);
+	width: 64px;
+	height: 64px;
+	cursor: pointer;
+}
+#popularTemplate {
+	display: none;
+}
+.popularImage {
+	width: 54px;
+	height: 54px;
+	margin-left: 5px;
+	margin-top: 5px;
 }

@@ -3,11 +3,11 @@ var common = require('./common'),
 	form = require('connect-form'),
 	app = express.createServer(
 		form({ keepExtensions: true, uploadDir: common.tempUploadDir })
-	),
-	upload = require('./upload');
+	);
 
 app.use(express.static(common.publicDir));
-app.post('/upload', upload.onUpload);
+app.post('/upload', require('./upload').post);
+app.get('/popular', require('./popular').get);
 
 var port = process.env.PORT || 3000;
 app.listen(port, function() {
