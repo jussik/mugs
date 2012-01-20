@@ -8,6 +8,7 @@ function Mug() {
 	this.skipDraw = false;
 	
 	$('#imgTarget').load(function() {
+		Util.fitImage($(this), 10);
 		$('#imgLabel').hide();
 		self.showTexture = true;
 		self.texFromUserImage();
@@ -22,7 +23,7 @@ function Mug() {
 	});
 	$('#imgScale').bind('keyup change paste', function() {
 		var fval = parseFloat($(this).val());
-		if(!isNaN(fval) && fval >= 0.5 && fval <= 2) {
+		if(!isNaN(fval) && fval >= 0.5 && fval <= 1.75) {
 			self.imageScale = fval;
 			App.scene.program.setUniform("imageScale", self.imageScale);
 			if(!self.skipDraw)
@@ -80,9 +81,12 @@ function Mug() {
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 			//gl.generateMipmap(gl.TEXTURE_2D);
 			
+			var img = $('#imgTarget');
+			var ratio = img.width()/img.height();
 			App.scene.program.setUniform("hasTexture", true);
-			App.scene.program.setUniform("imageScale", self.imageScale);
 			App.scene.program.setUniform("sampler", 0);
+			App.scene.program.setUniform("imageScale", self.imageScale);
+			App.scene.program.setUniform("imageRatio", ratio);
 		} else {
 			App.scene.program.setUniform("hasTexture", false);
 		}
@@ -94,7 +98,7 @@ function Mug() {
 	this.load = function(data) {
 		self.skipDraw = true;
 		self.picker.setColor(data.color);
-		$('#imgScale').val(data.imgScale).change();
+		$('#imgScale').val(data.scale).change();
 		self.skipDraw = false;
 		$('#imgTarget').hide().prop('src', data.img);
 	}

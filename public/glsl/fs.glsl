@@ -11,6 +11,7 @@ varying vec4 vColor;
 
 uniform float shininess;
 uniform float imageScale;
+uniform float imageRatio;
 
 uniform vec3 ambientColor;
 uniform vec3 directionalColor;
@@ -65,6 +66,11 @@ void main(void) {
 	lightWeighting = ambientColor + diffuseLight;
 
 	vec3 texPos = vModelPosition.xyz;
+	if(imageRatio > 1.0) {
+		texPos.y = texPos.y * imageRatio;
+	} else {
+		texPos.x = texPos.x / imageRatio;
+	}
 	vec4 texColor = vec4(0.0, 0.0, 0.0, 0.0);
 	vec2 texCoord = vec2(texPos.x/imageScale + 0.5, -texPos.y/imageScale + 0.5);
 	if (hasTexture) {

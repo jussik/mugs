@@ -6,8 +6,10 @@ var common = require('./common'),
 	);
 
 app.use(express.static(common.publicDir));
+app.use(express.bodyParser());
 app.post('/upload', require('./upload').post);
 app.get('/popular', require('./popular').get);
+app.post('/popular', require('./popular').post);
 
 var port = process.env.PORT || 3000;
 app.listen(port, function() {

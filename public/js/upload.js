@@ -51,8 +51,4 @@ function UploadHandler() {
 		ev.preventDefault();
 		handleFile(ev.dataTransfer.files[0]);
 	}, false);
-	
-	$('#imgTarget').load(function() {
-		Util.fitImage($(this), 10);
-	});
 }
