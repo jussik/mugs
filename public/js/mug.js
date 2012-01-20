@@ -12,6 +12,7 @@ function Mug() {
 		self.showTexture = true;
 		self.texFromUserImage();
 	});
+	
 	$('#imgClear').click(function() {
 		$('#imgTarget').hide();
 		$('#imgLabel').show();
@@ -21,7 +22,7 @@ function Mug() {
 	});
 	$('#imgScale').bind('keyup change paste', function() {
 		var fval = parseFloat($(this).val());
-		if(!isNaN(fval)) {
+		if(!isNaN(fval) && fval >= 0.5 && fval <= 2) {
 			self.imageScale = fval;
 			App.scene.program.setUniform("imageScale", self.imageScale);
 			if(!self.skipDraw)
