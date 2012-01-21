@@ -9,7 +9,7 @@ function UploadHandler() {
 		
 		var reader = new FileReader();
 		reader.onload = function(re) {
-			$('#imgTarget').prop('src', re.target.result);
+			$('#imgTarget').prop('src', re.target.result).data('storedFile', false);
 		};
 		reader.readAsDataURL(file);
 		
@@ -23,12 +23,16 @@ function UploadHandler() {
 	xhr.upload.addEventListener("progress", function(e) {
 		App.message("Uploaded " + ((e.loaded/e.total) * 100).toFixed(2) + "%");
 	});
-	xhr.upload.addEventListener("load", function(e) {
+	xhr.upload.addEventListener("load", function(e, d) {
 		App.message("Upload complete");
 	});
 	xhr.upload.addEventListener("abort", function(e) {
 		App.message("Upload aborted");
 	});
+    xhr.onreadystatechange = function(d) {
+        console.log(d, xhr, xhr.readyState);
+        if(xhr.readyState != 4) return;
+    };
 		
 	$('#imgUpload').change(function(ev) {
 		handleFile(ev.target.files[0]);

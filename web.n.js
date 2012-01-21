@@ -1,0 +1,17 @@
+var common = require('./common.n'),
+	express = require('express'),
+	app = express.createServer(),
+    upload = require('./upload.n'),
+    popular = require('./popular.n');
+
+app.use(express.static(common.publicDir));
+app.use(express.bodyParser({ uploadDir: common.tempUploadDir }));
+
+app.post('/upload', upload.post);
+app.get('/popular', popular.get);
+app.post('/popular', popular.post);
+
+var port = process.env.PORT || 5000;
+app.listen(port, function() {
+	console.log('Listening on ' + port);
+});

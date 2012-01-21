@@ -6,21 +6,23 @@ function Mug() {
 	this.showTexture = false;
 	this.imageScale = 1.0;
 	this.skipDraw = false;
-	
-	$('#imgTarget').load(function() {
-		Util.fitImage($(this), 10);
-		$('#imgLabel').hide();
-		self.showTexture = true;
-		self.texFromUserImage();
-	});
-	
-	$('#imgClear').click(function() {
-		$('#imgTarget').hide();
+    
+    this.clearImage = function() {
+		$('#imgTarget').hide().removeData('storedFile');
 		$('#imgLabel').show();
 		self.showTexture = false;
 		self.texFromUserImage();
 		return false;
-	});
+	}
+	
+	$('#imgTarget').load(function() {
+		Util.fitImage($('#imgTarget'), 10);
+		$('#imgLabel').hide();
+		self.showTexture = true;
+		self.texFromUserImage();
+    });
+	
+	$('#imgClear').click(this.clearImage);
 	$('#imgScale').bind('keyup change paste', function() {
 		var fval = parseFloat($(this).val());
 		if(!isNaN(fval) && fval >= 0.5 && fval <= 1.75) {
@@ -48,7 +50,8 @@ function Mug() {
 					self.model.uniforms.matColor = this.rgb;
 					// set image container background
 					$('#imgContainer').css('background-color', this.color);
-					if(this.rgb[0] + this.rgb[1] + this.rgb[2] < 1.5)
+                    // set text to black or white depending on lightness
+					if(this.hsl[2] < 0.5)
 						$('#imgLabel').css('color', 'white');
 					else
 						$('#imgLabel').css('color', 'black');
@@ -98,8 +101,11 @@ function Mug() {
 	this.load = function(data) {
 		self.skipDraw = true;
 		self.picker.setColor(data.color);
-		$('#imgScale').val(data.scale).change();
+        $('#imgScale').val(data.scale||1).change();
 		self.skipDraw = false;
-		$('#imgTarget').hide().prop('src', data.img);
+        if(data.img)
+            $('#imgTarget').hide().prop('src', data.img).data('storedFile', true);
+        else
+            self.clearImage();
 	}
 };
