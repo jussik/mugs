@@ -30,8 +30,9 @@ function UploadHandler() {
 		App.message("Upload aborted");
 	});
     xhr.onreadystatechange = function(d) {
-        console.log(d, xhr, xhr.readyState);
         if(xhr.readyState != 4) return;
+        var img = JSON.parse(xhr.responseText).img;
+        $('#imgTarget').prop('src', img);
     };
 		
 	$('#imgUpload').change(function(ev) {

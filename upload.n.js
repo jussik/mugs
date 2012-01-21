@@ -38,7 +38,6 @@ function md5sum(stream, callback) {
 }
 
 function isSameFile(path1, path2) {
-    return false;
 	var fd1 = fs.openSync(path1, 'r');
 	var fd2 = fs.openSync(path2, 'r');
 	var size1 = fs.fstatSync(fd1).size;
@@ -128,7 +127,8 @@ exports.post = function(req, res) {
                     fs.renameSync(data.oldPath, data.newPath);
                 }
                 // return URL of image
-                var url = data.newPath;
+                var url = path.basename(data.newPath);
+                url = '/' + common.publicUploadURL + '/' + url.substr(0,3) + '/' + url;
                 res.json({img:url});
             } else {
                 // No eligible names
