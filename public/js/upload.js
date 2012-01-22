@@ -32,7 +32,7 @@ function UploadHandler() {
     xhr.onreadystatechange = function(d) {
         if(xhr.readyState != 4) return;
         var img = JSON.parse(xhr.responseText).img;
-        $('#imgTarget').prop('src', img);
+        $('#imgTarget').prop('src', img).data('storedFile', true);
     };
 		
 	$('#imgUpload').change(function(ev) {

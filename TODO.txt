@@ -1,0 +1,3 @@
+exchangeable handle
+correct cylindrical project for texture
+correct phong shading

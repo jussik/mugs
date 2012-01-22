@@ -5,13 +5,23 @@ function GetPopularMugs() {
             .click(function () {
                 App.currentMug.load(mug);
             });
+        elem.children('.popularRemove').click(function(ev) {
+            $(this).parent().remove();
+            ev.stopPropagation();
+            $.ajax('/popular', {
+                type: "DELETE",
+                data: JSON.stringify(mug),
+                contentType: 'application/json'
+            });
+            return false;
+        });
         if(mug.img) {
-            elem.children().prop('src', mug.img)
+            elem.children('img').prop('src', mug.img)
                 .load(function() {
                     Util.fitImage($(this), 5);
                 });
         } else {
-            elem.children().remove();
+            elem.children('img').remove();
         }
         elem.appendTo('#popular').show();
     };
@@ -44,4 +54,5 @@ function GetPopularMugs() {
         }
         return false;
     });
+    
 }

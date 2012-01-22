@@ -1,21 +1,3 @@
-/*
- * This file is responsible for receiving uploaded files and
- * storing them intelligently.
- *
- * 1. uploaded file is stored in a temporary location
- * 2. md5sum of file is calculated
- * 3. construct a new location for the file: {publicUploadDir}/{md5prefix}/{md5}.{ext}
- *  - publicUploadDir is the configured location for uploads
- *  - md5prefix is the first 3 characters of the file's md5
- *  - md5 is the md5sum itself
- *  - ext is the extension of the file
- * 4. if file doesn't exist, move it there and stop
- * 5. if file exists and is the same file as the one being uploaded,
- *    remove the temporary file and stop
- * 6. repeat steps 3-6 by adding an incrementing suffix ("_1", "_2", ...) to the end
- *    of the md5sum in the filename until a slot is found or the try threshold is reached
- */
-
 var common = require('./common.n'),
 	fs = require('fs'),
 	path = require('path'),
@@ -76,8 +58,11 @@ function pathCheck(data) {
 }
 
 function fileLengthCheck(data) {
-    for(var len=3;len<=data.fullname.length;len++) {
-        data.newPath = path.join(data.dir, data.fullname.substr(0, len));
+    // Start with the first 2 characters of the hash and
+    // keep adding to the length until we find the same file
+    // or an unused filename
+    for(var len=2;len<=data.fullname.length;len++) {
+        data.newPath = path.join(data.dir, data.fullname.substr(0, len) + data.ext);
         if(pathCheck(data))
             return true;
     }
@@ -87,7 +72,7 @@ function fileLengthCheck(data) {
 function fileSuffixCheck(data) {
     // Append an incrementing hex digit to the filename
     for(var suf=0;suf<16;suf++) {
-        data.newPath = path.join(data.dir, data.fullname + suf.toString(16));
+        data.newPath = path.join(data.dir, data.fullname + suf.toString(16) + data.ext);
         if(pathCheck(data))
             return true;
     }
@@ -104,9 +89,10 @@ exports.post = function(req, res) {
             var data = {
                 oldPath: oldPath,
                 newPath: null,
-                // publicUploadDir is split into directories made from the first 3
+                ext: path.extname(oldPath),
+                // publicUploadDir is split into directories made from the first 2
                 // characters of the file's md5sum.
-                dir: path.join(common.publicUploadDir, checksum.substr(0,3)),
+                dir: path.join(common.publicUploadDir, checksum.substr(0,2)),
                 // Filename is the file's md5sum.
                 fullname: checksum,
                 alreadyExists: false
@@ -128,7 +114,7 @@ exports.post = function(req, res) {
                 }
                 // return URL of image
                 var url = path.basename(data.newPath);
-                url = '/' + common.publicUploadURL + '/' + url.substr(0,3) + '/' + url;
+                url = common.getImgURL(url);
                 res.json({img:url});
             } else {
                 // No eligible names
