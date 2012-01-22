@@ -35,7 +35,7 @@ function GetPopularMugs() {
     $('#addPopular').click(function() {
         // save if no image or image has been saved
         if(!App.currentMug.showTexture || $('#imgTarget').data('storedFile')) {
-            var data = { color: App.currentMug.picker.color };
+            var data = { color: App.currentMug.color };
             if($('#imgTarget').data('storedFile')) {
                 var img = $('#imgTarget').prop('src');
                 data.img = img.substr(img.lastIndexOf('/') + 1);

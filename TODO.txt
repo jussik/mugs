@@ -1,3 +1,4 @@
+prevent adding of duplicate populars client side
 exchangeable handle
 correct cylindrical project for texture
 correct phong shading

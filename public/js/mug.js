@@ -3,6 +3,7 @@ function Mug() {
 	var _def = $.Deferred();
 	this.ready = _def.promise();
 	
+    this.color = '#ffffff';
 	this.showTexture = false;
 	this.imageScale = 1.0;
 	this.skipDraw = false;
@@ -43,9 +44,10 @@ function Mug() {
 		self.model = new PhiloGL.O3D.Model(self.mesh);
 		
 		self.picker = $.farbtastic('#picker')
-			.setColor('#ffffff')
+			.setColor(self.color)
 			.linkTo(function() {
 				if(!isNaN(this.rgb[0])) {
+                    self.color = this.color;
 					// set model material
 					self.model.uniforms.matColor = this.rgb;
 					// set image container background

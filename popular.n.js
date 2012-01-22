@@ -5,14 +5,13 @@ mongo.log.debug = function() {};
 var db = mongo.db('mugs');
 
 function dbToResponse(mug) {
-    delete mug._id;
     if(mug.img)
         mug.img = common.getImgURL(mug.img);
     return mug;
 }
 
 exports.get = function(req, res) {
-	db.collection('mugs').find()
+	db.collection('mugs').find({}, {_id:false})
         .map(dbToResponse)
         .toArray(function(err, items) {
             if(err) {
@@ -37,12 +36,10 @@ exports.delete = function(req, res) {
     var mug = req.body;
     if(mug.img === undefined)
         mug.img = null;
+    else
+        mug.img = mug.img.substr(mug.img.lastIndexOf('/') + 1);
     if(mug.scale === undefined)
         mug.scale = null;
-    db.collection('mugs').remove({
-        color: mug.color,
-        img: mug.img.substr(mug.img.lastIndexOf('/') + 1),
-        scale: mug.scale
-    });
+    db.collection('mugs').remove(mug);
     res.send(204);
 }
