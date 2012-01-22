@@ -110,4 +110,17 @@ function Mug() {
         else
             self.clearImage();
 	}
+    
+    this.updateURL = function() {
+        var data = {color:this.color};
+        var url = "/mug/" + this.color;
+        if(this.showTexture && $('#imgTarget').data('storedFile')) {
+            var img = $('#imgTarget').prop('src');
+            img = img.substr(img.lastIndexOf('/') + 1);
+            url += '/' + img + ':' + this.imageScale;
+            data.img = img;
+            data.scale = this.imageScale;
+        }
+        window.history.pushState(data, "loadMug", url);
+    }
 };
